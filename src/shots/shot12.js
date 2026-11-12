@@ -14,7 +14,7 @@ export default {
 
     const car = lib.environments.createTrainInterior(ctx); scene.add(car.group);
     car.setOutside && car.setOutside(0xffd8e8);
-    const sun = new THREE.DirectionalLight(0xfff0d0, 1.0); sun.position.set(-6, 3, 2); sun.target.position.set(0, 1, 0); scene.add(sun, sun.target);
+    const sun = new THREE.DirectionalLight(0xfff0d0, 0.55); sun.position.set(-6, 3, 2); sun.target.position.set(0, 1, 0); scene.add(sun, sun.target);
     const yuki = lib.characters.createYuki(ctx, { withBag: true });
     yuki.group.position.set(-0.45, 0.47, 0.05); scene.add(yuki.group);
     // petal shadows: dark soft petal-shaped quads gliding across the lap/letter area
@@ -25,8 +25,8 @@ export default {
 
     const rig = ctx.camrig(camera)
       .keys([
-        { f: 0, pos: [0.9, 1.75, 1.15], look: [-0.5, 1.0, 0.2], fov: 32 },
-        { f: N - 1, pos: [0.75, 1.65, 1.0], look: [-0.5, 0.98, 0.2], fov: 30 },
+        { f: 0, pos: [0.5, 1.9, 1.35], look: [-0.42, 1.28, 0.45], fov: 30 },
+        { f: N - 1, pos: [0.42, 1.84, 1.22], look: [-0.42, 1.26, 0.45], fov: 29 },
       ], ease.inOut)
       .sway(0.004, 0.5);
 

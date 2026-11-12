@@ -11,11 +11,11 @@ export default {
     const sp = lib.look.skyPresets.morningSea;
     const sky = lib.look.createSkyDome({ ...sp, radius: 1500, sunDir: [-0.5, 0.3, -0.8], glow: 0.35, sunIntensity: 1.1 }); scene.add(sky.mesh);
     scene.fog = new THREE.Fog(0xd8eeff, 80, 900);
-    const kit = lib.look.lightingKit(scene, 'coast');
+    const kit = lib.look.lightingKit(scene, 'coast', { intensity: 0.7 });
 
     const station = lib.environments.createSeasideStation(ctx, { seed: 1401 }); scene.add(station.group);
     const rails = lib.environments.createRails(ctx, { length: 600 }); rails.group.position.set(-3.5, -1.0, 200); scene.add(rails.group);
-    const sea = lib.vfx.createSea(ctx, { size: 3000, seed: 1402, sunDir: [-0.5, 0.3, -0.8], shoreX: -24, foamWidth: 10, waveScale: 2.5 }); sea.mesh.position.set(-1500, -1.3, 0); scene.add(sea.group || sea.mesh);
+    const sea = lib.vfx.createSea(ctx, { size: 3000, seed: 1402, sunDir: [-0.5, 0.3, -0.8], shoreX: -24, foamWidth: 10, waveScale: 2.5, glint: 0.4 }); sea.mesh.position.set(-1500, -1.3, 0); scene.add(sea.group || sea.mesh);
     const train = lib.environments.createTrainExterior(ctx, { cars: 3 }); train.group.position.set(-3.5, -1.0, 9); scene.add(train.group);
     const gulls = lib.vfx.createGulls(ctx, { count: 7, center: [-10, 12, -14], radius: 14, seed: 1403, size: 1.1 }); scene.add(gulls.group);
     const clouds = lib.vfx.createClouds(ctx, { count: 10, center: [-300, 120, -800], spread: [1200, 30, 300], seed: 1404, sunDir: [-0.5, 0.3, -0.8], size: 1.8 }); scene.add(clouds.group);

@@ -35,7 +35,7 @@ export default {
       scene, camera, post: 'sunrise',
       update(local) {
         const t = local / (N - 1);
-        sky.set({ horizon: new THREE.Color(0xffc27a).lerp(new THREE.Color(0xffe6b8), t).getHex(), glow: ease.lerp(0.22, 0.4, t), sunIntensity: ease.lerp(1.1, 1.3, t) });
+        sky.set({ horizon: new THREE.Color(0xe89a5a).lerp(new THREE.Color(0xf2b882), t).getHex(), bottom: 0x2e6aa8, glow: ease.lerp(0.22, 0.4, t), sunIntensity: ease.lerp(1.1, 1.3, t) });
         sky.update && sky.update(local);
         yuki.pose('idle', local); yuki.setExpression('smile', 0.8); yuki.update(local);
         plane.update(local);

@@ -17,6 +17,7 @@ const inOut = t => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
 /** draw an anime face (eyes, brows, nose, mouth) for an expression -> CanvasTexture */
 function faceTexture(expr) {
   const c = document.createElement('canvas'); c.width = 256; c.height = 256; const g = c.getContext('2d');
+  g.fillStyle = '#ffffff'; g.beginPath(); g.ellipse(128, 132, 112, 118, 0, 0, PI * 2); g.fill();
   const closed = expr === 'closed' || expr === 'sleep';
   const sad = expr === 'sad', smile = expr === 'smile', surprise = expr === 'surprise', calm = expr === 'calm', det = expr === 'determined';
   const eyeH = surprise ? 1.25 : calm ? 0.8 : sad ? 0.85 : det ? 0.78 : 1;
@@ -64,7 +65,7 @@ function limb(r, len, mat) { const g = new THREE.Group(); const m = capsule(r, l
 
 export function createYuki(ctx, { withUmbrella = false, withBag = true, scale = 1 } = {}) {
   const group = new THREE.Group(); group.name = 'yuki';
-  const skin = look.toonMaterial({ color: 0xffe9dc, lit: 0xfff4ec, shadeTint: 0xb98f9a });
+  const skin = look.toonMaterial({ color: 0xf6dccb, lit: 0xffe8d8, litBoost: 0, shadeTint: 0xb98f9a });
   const hairM = look.toonMaterial({ color: 0x1e2140, shade: 0x12142a, spec: true, sheen: { color: 0x7d86d8, intensity: 0.5, offset: 0.3, width: 0.08 } });
   const blouse = look.toonMaterial({ color: 0xf6f1e6 }), cardigan = look.toonMaterial({ color: 0x2b3560, shade: 0x1b2140 }), skirtM = look.toonMaterial({ color: 0x2a2d4a, shade: 0x1a1c30 }), shoe = look.toonMaterial({ color: 0x3a2a2a }), sock = look.toonMaterial({ color: 0xf2f2f2 });
 
@@ -85,9 +86,10 @@ export function createYuki(ctx, { withUmbrella = false, withBag = true, scale = 
   const skull = new THREE.Mesh(new THREE.SphereGeometry(0.19, 28, 20), skin); skull.position.y = 0.14; skull.scale.set(0.95, 1.0, 0.92); head.add(skull);
   const chin = new THREE.Mesh(new THREE.SphereGeometry(0.15, 20, 14), skin); chin.position.set(0, 0.06, 0.02); chin.scale.set(0.85, 0.8, 0.8); head.add(chin);
   // face: two crossfading planes (neutral + expression)
-  const faceGeo = new THREE.PlaneGeometry(0.3, 0.3);
-  const faceA = new THREE.Mesh(faceGeo, new THREE.MeshBasicMaterial({ map: face('neutral'), transparent: true })); faceA.position.set(0, 0.125, 0.165); faceA.userData.noOutline = true;
-  const faceB = new THREE.Mesh(faceGeo, new THREE.MeshBasicMaterial({ map: face('calm'), transparent: true, opacity: 0 })); faceB.position.set(0, 0.125, 0.166); faceB.userData.noOutline = true;
+  // curved face patch wrapped on the skull (partial sphere: three.js maps the whole texture across the patch)
+  const faceGeo = new THREE.SphereGeometry(0.1935, 32, 24, PI / 2 - 1.0, 2.0, PI / 2 - 0.85, 1.7);
+  const faceA = new THREE.Mesh(faceGeo, look.toonMaterial({ color: 0xf6dccb, lit: 0xffe8d8, litBoost: 0, shadeTint: 0xb98f9a, map: face('neutral'), transparent: true })); faceA.position.set(0, 0.14, 0); faceA.scale.set(0.95, 1.0, 0.92); faceA.userData.noOutline = true;
+  const faceB = new THREE.Mesh(faceGeo, look.toonMaterial({ color: 0xf6dccb, lit: 0xffe8d8, litBoost: 0, shadeTint: 0xb98f9a, map: face('calm'), transparent: true, opacity: 0 })); faceB.position.set(0, 0.14, 0); faceB.scale.set(0.952, 1.002, 0.922); faceB.userData.noOutline = true;
   head.add(faceA, faceB);
   // hair: cap + fringe + side locks + back
   const hair = new THREE.Group(); head.add(hair);
@@ -113,7 +115,7 @@ export function createYuki(ctx, { withUmbrella = false, withBag = true, scale = 
     umbrella.add(canopy, ribs, shaft, handle); umbrella.userData.ribs = ribs;
     armL.fo.add(umbrella); umbrella.position.y = -0.28; umbrella.rotation.x = 0;
   }
-  const letter = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.11, 0.004), look.toonMaterial({ color: 0xfbf7ee })); letter.visible = false; armR.fo.add(letter); letter.position.set(0.06, -0.3, 0.02);
+  const letter = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.14, 0.004), look.toonMaterial({ color: 0xfbf7ee })); letter.visible = false; armR.fo.add(letter); letter.position.set(0.08, -0.3, 0.03); letter.rotation.x = -0.5;
   const planeG = new THREE.Group(); { const g = new THREE.ConeGeometry(0.05, 0.2, 3); g.rotateX(PI / 2); const m = new THREE.Mesh(g, look.flatMaterial({ color: 0xffffff })); m.scale.y = 0.35; planeG.add(m); const l = new THREE.LineSegments(new THREE.EdgesGeometry(g), new THREE.LineBasicMaterial({ color: 0x3a3d5c })); l.scale.y = 0.35; planeG.add(l); }
   planeG.visible = false; armR.fo.add(planeG); planeG.position.set(0.02, -0.3, 0.06);
 
@@ -137,8 +139,8 @@ export function createYuki(ctx, { withUmbrella = false, withBag = true, scale = 
     wake(f) { const t = smooth(0, 40, f); POSES.sleep(f, { blend: 1 - t }); const st = Math.sin(clamp(f / 40, 0, 1) * PI); set(J.aRs, lerp(-0.6, -0.5, t) - st * 1.4, 0, -0.1 - st * 0.4); set(J.aRe, -0.9 + st * 0.6); set(J.neck, lerp(0.1, -0.12 * st, t), lerp(0.25, 0, t), lerp(0.35, 0, t)); },
     closeUmbrella(f) { const t = smooth(0, 30, f); set(J.aLs, lerp(-2.6, -0.9, t), 0, lerp(0.25, 0.1, t)); set(J.aLe, lerp(-0.4, -1.3, t)); set(J.aRs, 0.1, 0, -0.1); set(J.aRe, -0.3); if (umbrella) umbrella.rotation.x = lerp(0, 0.4, t); },
     touchGlass(f) { const t = smooth(0, 30, f); POSES.idle(f); set(J.aLs, lerp(0, -1.1, t), lerp(0, 0.9, t), lerp(0.12, 0.3, t)); set(J.aLe, lerp(-0.2, -0.3, t)); set(J.neck, 0, 0.5 * t); },
-    readLetter(f) { POSES.sit(f); set(J.aLs, -1.3, 0.35, 0.15); set(J.aLe, -1.5); set(J.aRs, -1.3, -0.35, -0.15); set(J.aRe, -1.5); set(J.neck, 0.35); },
-    foldPlane(f) { POSES.readLetter(f); const s = f / 24; set(J.aLs, -1.2 + Math.sin(s * 3) * 0.08, 0.4, 0.2); set(J.aRs, -1.2 - Math.sin(s * 3 + 1) * 0.08, -0.5, -0.25); set(J.aRe, -1.4 + Math.sin(s * 4) * 0.15); },
+    readLetter(f) { POSES.sit(f); set(J.aLs, -0.95, -0.42, 0.1); set(J.aLe, -0.8); set(J.aRs, -0.95, 0.42, -0.1); set(J.aRe, -0.8); set(J.neck, 0.4); },
+    foldPlane(f) { POSES.readLetter(f); const s = f / 24; set(J.aLs, -0.95 + Math.sin(s * 3) * 0.08, -0.5, 0.15); set(J.aRs, -0.95 - Math.sin(s * 3 + 1) * 0.08, 0.5, -0.15); set(J.aRe, -0.75 + Math.sin(s * 4) * 0.15); },
     throw(f) { const w = smooth(0, 14, f), r = smooth(14, 20, f), fol = smooth(20, 36, f); set(J.aRs, lerp(-0.4, -2.4, w) + lerp(0, 1.9, r) + lerp(0, -0.4, fol), 0, lerp(-0.1, -0.5, w) + lerp(0, 0.3, r)); set(J.aRe, lerp(-0.3, -1.6, w) + lerp(0, 1.5, r)); set(J.aLs, -0.2, 0, 0.2); set(J.torso, lerp(0, -0.15, w) + lerp(0, 0.35, r) - lerp(0, 0.1, fol), lerp(0, -0.3, w) + lerp(0, 0.5, r), 0); set(J.lLh, -0.2 * r); set(J.lRh, 0.25 * w - 0.1 * r); hips.position.y = 0.78 - 0.03 * w; },
     stepDown(f) { const t = clamp(f / 36, 0, 1); const s = t * PI; set(J.lLh, -Math.sin(s) * 0.9); set(J.lLk, Math.sin(s) * 1.1); set(J.lRh, Math.sin(s * 0.5) * 0.3); set(J.aLs, -0.3, 0, 0.3); set(J.aRs, 0.2, 0, -0.2); set(J.aRe, -0.4); set(J.torso, 0.12 * Math.sin(s)); hips.position.y = 0.78 - 0.08 * Math.sin(s); },
   };

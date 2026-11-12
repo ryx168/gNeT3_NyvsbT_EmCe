@@ -104,7 +104,7 @@ export const PRESETS = {
     vignette: 0.3, vignetteSoft: 0.75, grain: 0.03, ca: 0.6,
   },
   coast: {
-    exposure: 1.0,
+    exposure: 0.92,
     bloom: { threshold: 0.9, strength: 0.25, radius: 0.4 },
     lift: [0.0, 0.0, 0.01], gamma: [1.0, 1.0, 1.0], gain: [1.02, 1.03, 1.06],
     saturation: 1.22, contrast: 1.08,
@@ -112,7 +112,7 @@ export const PRESETS = {
     vignette: 0.25, vignetteSoft: 0.6, grain: 0.03, ca: 0.0,
   },
   sunrise: {
-    exposure: 0.9,
+    exposure: 0.82,
     bloom: { threshold: 0.82, strength: 0.45, radius: 0.8 },
     lift: [0.03, 0.015, 0.0], gamma: [1.0, 1.0, 1.0], gain: [1.08, 1.0, 0.88],
     saturation: 1.15, contrast: 1.02,

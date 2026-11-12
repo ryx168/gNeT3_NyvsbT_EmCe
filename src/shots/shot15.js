@@ -11,7 +11,7 @@ export default {
     const sp = lib.look.skyPresets.morningSea;
     const sky = lib.look.createSkyDome({ ...sp, radius: 1500, sunDir: [-0.6, 0.18, -0.78], glow: 0.3, sunSize: 0.035, sunIntensity: 1.1 }); scene.add(sky.mesh);
     scene.fog = new THREE.Fog(0xdff0ff, 120, 1200);
-    const kit = lib.look.lightingKit(scene, 'coast');
+    const kit = lib.look.lightingKit(scene, 'coast', { intensity: 0.75 });
     if (kit.key) kit.key.position.set(-60, 18, -78);
 
     const beach = lib.environments.createBeach(ctx, { seed: 1501 }); scene.add(beach.group);

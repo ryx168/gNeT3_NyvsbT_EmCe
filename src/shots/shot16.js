@@ -10,7 +10,7 @@ export default {
     const camera = new THREE.PerspectiveCamera(34, ctx.width / ctx.height, 0.1, 4000);
     const sp = lib.look.skyPresets.sunrise;
     const SUN = [-0.45, 0.16, -0.88];
-    const sky = lib.look.createSkyDome({ ...sp, radius: 2500, sunDir: SUN, glow: 0.3, sunIntensity: 1.1, sunSize: 0.025 }); scene.add(sky.mesh);
+    const sky = lib.look.createSkyDome({ ...sp, radius: 2500, sunDir: SUN, glow: 0.3, sunIntensity: 1.1, sunSize: 0.025, horizon: 0xeca468, bottom: 0x2e6aa8 }); scene.add(sky.mesh);
     scene.fog = new THREE.Fog(0xf2d2b8, 600, 4000);
     const kit = lib.look.lightingKit(scene, 'sunrise', { intensity: 0.7 });
 
