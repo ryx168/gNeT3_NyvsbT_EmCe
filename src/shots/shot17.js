@@ -11,7 +11,7 @@ export default {
     const sp = lib.look.skyPresets.sunrise;
     const SUN = new THREE.Vector3(-0.38, 0.12, -0.92).normalize();
     const sky = lib.look.createSkyDome({ ...sp, radius: 3000, sunDir: SUN.toArray(), sunSize: 0.02, glow: 0.18, sunIntensity: 1.1 }); scene.add(sky.mesh);
-    scene.fog = new THREE.Fog(0xf0cfae, 600, 3400);
+    scene.fog = new THREE.Fog(0xf0cfae, 1500, 7000);
     const kit = lib.look.lightingKit(scene, 'sunrise', { intensity: 0.7 });
 
     const beach = lib.environments.createBeach(ctx, { seed: 1701 }); scene.add(beach.group);
@@ -40,7 +40,7 @@ export default {
         yuki.pose('idle', local); yuki.setExpression('smile', 0.8); yuki.update(local);
         plane.update(local);
         sea.update(local); clouds.update(local); gulls.update(local);
-        flare.setIntensity(0.5 + 0.2 * t); flare.update(local, camera);
+        flare.setIntensity(0.2 + 0.15 * t); flare.update(local, camera);
         rig.update(local); kit.update && kit.update(local);
       },
     };
