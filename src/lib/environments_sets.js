@@ -143,12 +143,12 @@ export function createTrainInterior(ctx) {
   const L = 18;
   group.add(nol(box(2.8, 0.1, L, floorMat, 0, -0.05, 0)), nol(box(0.1, 2.6, L, wallMat, -1.4, 1.3, 0)), nol(box(0.1, 2.6, L, wallMat, 1.4, 1.3, 0)), nol(box(2.9, 0.1, L, look.toonMaterial({ color: 0xf4f1ea }), 0, 2.6, 0)));
   // window on -X with frame; windowMesh is the plane a shot may texture
-  const windowMesh = nol(plane(1.6, 1.1, new THREE.MeshBasicMaterial({ color: 0x0a0c1a }))); windowMesh.position.set(-1.35, 1.3, 0); windowMesh.rotation.y = PI / 2;
-  const windowGlass = nol(plane(1.6, 1.1, look.flatMaterial({ color: 0x9fc0ff, opacity: 0.08, transparent: true }))); windowGlass.position.set(-1.34, 1.3, 0); windowGlass.rotation.y = PI / 2; windowGlass.material.depthWrite = false;
+  const windowMesh = nol(plane(1.6, 1.1, new THREE.MeshBasicMaterial({ color: 0x0a0c1a }))); windowMesh.position.set(-1.33, 1.3, 0); windowMesh.rotation.y = PI / 2;   // 2 cm proud of the wall face (-1.35): coplanar = z-fight flicker
+  const windowGlass = nol(plane(1.6, 1.1, look.flatMaterial({ color: 0x9fc0ff, opacity: 0.08, transparent: true }))); windowGlass.position.set(-1.325, 1.3, 0); windowGlass.rotation.y = PI / 2; windowGlass.material.depthWrite = false;
   const frameGeo = merged([{ geo: new THREE.BoxGeometry(0.06, 0.08, 1.75), pos: [-1.36, 0.72, 0] }, { geo: new THREE.BoxGeometry(0.06, 0.08, 1.75), pos: [-1.36, 1.88, 0] }, { geo: new THREE.BoxGeometry(0.06, 1.2, 0.08), pos: [-1.36, 1.3, -0.84] }, { geo: new THREE.BoxGeometry(0.06, 1.2, 0.08), pos: [-1.36, 1.3, 0.84] }]);
   group.add(windowMesh, windowGlass, new THREE.Mesh(frameGeo, steel));
   // more windows along the wall (plain dark glass), both sides
-  for (let i = -2; i <= 2; i++) { if (i === 0) continue; for (const sx of [-1, 1]) { const w = nol(plane(1.6, 1.1, new THREE.MeshBasicMaterial({ color: 0x0b0d1c }))); w.position.set(sx * 1.35, 1.3, i * 3.5); w.rotation.y = -sx * PI / 2; group.add(w); } }
+  for (let i = -2; i <= 2; i++) { if (i === 0) continue; for (const sx of [-1, 1]) { const w = nol(plane(1.6, 1.1, new THREE.MeshBasicMaterial({ color: 0x0b0d1c }))); w.position.set(sx * 1.33, 1.3, i * 3.5); w.rotation.y = -sx * PI / 2; group.add(w); } }
   // seats: the hero seat at origin + rows
   const seat = new THREE.Group();
   seat.add(box(1.1, 0.5, 0.9, seatMat, -0.4, 0.25, 0), box(1.1, 0.95, 0.18, seatDk, -0.4, 0.95, -0.52), box(0.12, 0.35, 0.9, seatDk, 0.18, 0.62, 0));

@@ -30,11 +30,11 @@ export default {
     const outside = new THREE.Group(); scene.add(outside);
     const cols = [0xff3fa4, 0x3ff0ff, 0xffb347, 0xfff1d6, 0xff6fcf];
     const strips = [];
-    for (let i = 0; i < 150; i++) {
-      const h = 0.3 + r() * 2.2, w = 0.08 + r() * 0.25;
-      const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: cols[i % cols.length], transparent: true, opacity: 0.55 + r() * 0.4, blending: THREE.AdditiveBlending, depthWrite: false }));
+    for (let i = 0; i < 260; i++) {
+      const h = 0.3 + r() * 2.2, w = 0.04 + r() * 0.12;
+      const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: cols[i % cols.length], transparent: true, opacity: 0.3 + r() * 0.3, blending: THREE.AdditiveBlending, depthWrite: false }));
       m.rotation.y = Math.PI / 2; m.userData.noOutline = true;
-      m.position.set(-2.6 - r() * 7, 0.2 + r() * 3.2, 0);
+      m.position.set(-5 - r() * 9, 0.2 + r() * 3.2, 0);
       m.userData.z0 = r() * LOOP;
       outside.add(m); strips.push(m);
     }
@@ -64,7 +64,7 @@ export default {
         camera.position.y += Math.sin(f * 0.9) * 0.002 * ease.seg(f, 10, 60) + Math.sin(f * 2.3) * 0.0008;   // rail rumble
         kit.update && kit.update(f); car.update(f, f / 24);
         yuki.pose(f < 8 ? 'sit' : 'sitIdle', f); yuki.lookAt(P_OUT); yuki.setExpression('calm', 1); yuki.update(f);
-        const d = dist(f), v = vel(f), smear = 1 + v * 7;
+        const d = dist(f), v = vel(f), smear = Math.min(2.5, 1 + v * 1.8);   // capped: a 4 m-wide streak would strobe the whole pane
         for (const m of strips) { m.position.z = ((m.userData.z0 + d) % LOOP) - LOOP / 2; m.scale.x = smear; }
         bokeh.update(f);
         for (const m of bokehDiscs) { m.position.z = ((m.userData.z0 + d + LOOP) % LOOP) - LOOP / 2; m.scale.x = 1 + v * 3; }
