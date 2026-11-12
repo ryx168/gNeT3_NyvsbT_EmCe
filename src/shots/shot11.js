@@ -9,9 +9,9 @@ export default {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(36, ctx.width / ctx.height, 0.1, 1500);
     const sp = lib.look.skyPresets.sakuraMorning;
-    const sky = lib.look.createSkyDome({ ...sp, radius: 900 }); scene.add(sky.mesh);
-    scene.fog = new THREE.Fog(0xffe6f0, 140, 800);
-    const kit = lib.look.lightingKit(scene, 'sakura');
+    const sky = lib.look.createSkyDome({ ...sp, radius: 900, glow: 0.25, horizon: 0xf3d6e4 }); scene.add(sky.mesh);
+    scene.fog = new THREE.Fog(0xf6dde8, 220, 1100);
+    const kit = lib.look.lightingKit(scene, 'sakura', { intensity: 0.65 });
 
     const lane = lib.environments.createSakuraLane(ctx, { seed: 1101, length: 240 }); lane.group.position.z = 60; scene.add(lane.group);
     const rails = lib.environments.createRails(ctx, { length: 400 }); rails.group.position.z = 80; scene.add(rails.group);
@@ -19,7 +19,7 @@ export default {
     const petals = lib.vfx.createPetals(ctx, { count: 9000, area: [40, 16, 120], center: [0, 6, -30], wind: [0.8, 0, -0.6], seed: 1102, size: 1.1 }); scene.add(petals.group);
     petals.burst(30, [0, 2.5, -4], 18, { strength: 1.4, lift: 1.2 });
     petals.burst(44, [0, 2.5, -40], 22, { strength: 1.0, lift: 0.9 });
-    const mist = lib.vfx.createMist(ctx, { area: [120, 300], height: 1.2, center: [0, 0.4, -60], color: 0xfff0f5, seed: 1103, opacity: 0.25 }); scene.add(mist.group);
+    const mist = lib.vfx.createMist(ctx, { area: [120, 300], height: 1.0, center: [0, 0.2, -120], color: 0xfff0f5, seed: 1103, opacity: 0.08 }); scene.add(mist.group);
 
     const rig = ctx.camrig(camera)
       .keys([

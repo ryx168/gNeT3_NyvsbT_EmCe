@@ -339,7 +339,7 @@ export function createBeach(ctx, { seed = 8 } = {}) {
   // sloped sand: displaced plane with ripples, darker wet band toward the water (-X)
   const geo = new THREE.PlaneGeometry(400, 400, 80, 80); geo.rotateX(-PI / 2);
   const pos = geo.attributes.position; const col = new Float32Array(pos.count * 3); const dry = new THREE.Color(0xf1dcb0), wet = new THREE.Color(0xc9a97a);
-  for (let i = 0; i < pos.count; i++) { const x = pos.getX(i), z = pos.getZ(i); const y = Math.max(-0.9, -x * 0.012) + Math.sin(z * 0.6 + x * 0.3) * 0.025 + (r() - 0.5) * 0.03; pos.setY(i, Math.min(y, 1.5)); const t = THREE.MathUtils.smoothstep(-x, 18, 34); const c = dry.clone().lerp(wet, t); col.set([c.r, c.g, c.b], i * 3); }
+  for (let i = 0; i < pos.count; i++) { const x = pos.getX(i), z = pos.getZ(i); const y = Math.max(-0.9, x * 0.012) + Math.sin(z * 0.6 + x * 0.3) * 0.025 + (r() - 0.5) * 0.03; pos.setY(i, Math.min(y, 1.5)); const t = THREE.MathUtils.smoothstep(-x, 18, 34); const c = dry.clone().lerp(wet, t); col.set([c.r, c.g, c.b], i * 3); }
   geo.setAttribute('color', new THREE.BufferAttribute(col, 3)); geo.computeVertexNormals();
   const sandMat = look.toonMaterial({ color: 0xffffff }); sandMat.vertexColors = true;
   const sand = nol(new THREE.Mesh(geo, sandMat)); group.add(sand);

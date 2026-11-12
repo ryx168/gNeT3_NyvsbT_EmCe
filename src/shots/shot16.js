@@ -10,9 +10,9 @@ export default {
     const camera = new THREE.PerspectiveCamera(34, ctx.width / ctx.height, 0.1, 4000);
     const sp = lib.look.skyPresets.sunrise;
     const SUN = [-0.45, 0.16, -0.88];
-    const sky = lib.look.createSkyDome({ ...sp, radius: 2500, sunDir: SUN, glow: 0.45, sunIntensity: 1.2 }); scene.add(sky.mesh);
-    scene.fog = new THREE.Fog(0xffd9b0, 200, 1800);
-    const kit = lib.look.lightingKit(scene, 'sunrise');
+    const sky = lib.look.createSkyDome({ ...sp, radius: 2500, sunDir: SUN, glow: 0.3, sunIntensity: 1.1, sunSize: 0.025 }); scene.add(sky.mesh);
+    scene.fog = new THREE.Fog(0xf2d2b8, 300, 2200);
+    const kit = lib.look.lightingKit(scene, 'sunrise', { intensity: 0.7 });
 
     const beach = lib.environments.createBeach(ctx, { seed: 1601 }); scene.add(beach.group);
     if (beach.sea) beach.sea.visible = false;
@@ -22,12 +22,12 @@ export default {
     const flare = lib.vfx.createLensFlare(ctx, { sun: [-1100, 400, -2150], color: 0xffd9a0, intensity: 0 }); scene.add(flare.group);
 
     const yuki = lib.characters.createYuki(ctx, { withBag: true });
-    yuki.group.position.set(-21, 0.25, -6); yuki.group.rotation.y = Math.atan2(-120 + 21, -40 + 6); scene.add(yuki.group);
+    yuki.group.position.set(-21, -0.23, -6); yuki.group.rotation.y = Math.atan2(-120 + 21, -40 + 6); scene.add(yuki.group);
     yuki.holdPlane(true);
     const plane = lib.vfx.createPaperPlane(ctx, { scale: 1.1 }); plane.group.visible = false; scene.add(plane.group);
     const REL = yuki.throwRelease || 20;
     const hand = new THREE.Vector3();
-    const path = lib.vfx.glidePath({ from: [-21.6, 1.45, -6.6], to: [-120, 26, -130], apex: [-60, 9, -50], frames: N - REL - 1, start: REL, wobble: 0.5, bank: 1.2 });
+    const path = lib.vfx.glidePath({ from: [-21.6, 1.0, -6.6], to: [-120, 26, -130], apex: [-60, 9, -50], frames: N - REL - 1, start: REL, wobble: 0.5, bank: 1.2 });
     plane.setPath(path);
 
     const rig = ctx.camrig(camera)

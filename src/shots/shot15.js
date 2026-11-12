@@ -38,7 +38,7 @@ export default {
       scene, camera, post: 'coast',
       update(local) {
         const w = ease.seg(local, 0, 80, t => t);
-        yuki.group.position.lerpVectors(A, B, w); yuki.group.position.y = -yuki.group.position.x * 0.012 * (yuki.group.position.x < 0 ? 1 : 0);
+        yuki.group.position.lerpVectors(A, B, w); yuki.group.position.y = yuki.group.position.x * 0.012 + 0.02;
         yuki.group.rotation.y = Math.atan2(B.x - A.x, B.z - A.z);
         if (local < 80) yuki.pose('walk', local); else yuki.pose('idle', local - 80);
         yuki.holdPlane(local >= 90); yuki.holdLetter(false);
