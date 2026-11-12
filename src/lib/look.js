@@ -548,6 +548,9 @@ const SKY_VERT = /* glsl */`
 varying vec3 vP;
 void main() { vP = normalize( position ); vec4 mv = modelViewMatrix * vec4( position, 1.0 ); gl_Position = projectionMatrix * mv; }`;
 const SKY_FRAG = /* glsl */`
+#ifndef saturate
+#define saturate( a ) clamp( a, 0.0, 1.0 )
+#endif
 uniform vec3 top; uniform vec3 horizon; uniform vec3 bottom;
 uniform vec3 sunDir; uniform vec3 sunColor; uniform float sunSize; uniform float glow; uniform float sunIntensity;
 uniform float haze; uniform vec3 hazeColor; uniform float stars; uniform float starSeed; uniform float twinkle; uniform float time;
