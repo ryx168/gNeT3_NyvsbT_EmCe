@@ -44,11 +44,43 @@ export async function openStudio(browser, url) {
   return { page, console: console_, gl };
 }
 
-export async function captureFrame(page, frame, file, { scale = 1, type = 'png' } = {}) {
-  const info = await page.evaluate(f => window.__studio.seek(f), frame);
-  const errs = await page.evaluate(() => window.__studio.errors.splice(0));
+/** decode a screenshot inside the page and sample a 6x4 grid: { uniform, value:[r,g,b] } */
+async function sampleImage(page, b64, type) {
+  return page.evaluate(async (b64, type) => {
+    const img = new Image(); img.src = `data:image/${type === 'jpeg' ? 'jpeg' : 'png'};base64,${b64}`; await img.decode();
+    const c = document.createElement('canvas'); c.width = 96; c.height = 54; const g = c.getContext('2d'); g.drawImage(img, 0, 0, 96, 54);
+    let first = null, uniform = true;
+    for (let i = 0; i < 6; i++) for (let j = 0; j < 4; j++) {
+      const d = g.getImageData(Math.round(96 * (i + 0.5) / 6), Math.round(54 * (j + 0.5) / 4), 1, 1).data; const v = [d[0], d[1], d[2]];
+      if (!first) first = v; else if (Math.abs(v[0] - first[0]) + Math.abs(v[1] - first[1]) + Math.abs(v[2] - first[2]) > 6) uniform = false;
+    }
+    return { uniform, value: first };
+  }, b64, type);
+}
+
+export async function captureFrame(page, frame, file, { scale = 1, type = 'png', retries = 3 } = {}) {
+  let info = await page.evaluate(f => window.__studio.seek(f), frame);
   if (scale !== 1) await page.setViewport({ width: 1920, height: 1080, deviceScaleFactor: scale });
-  await page.screenshot({ path: file, type, clip: { x: 0, y: 0, width: 1920, height: 1080 }, omitBackground: false, ...(type === 'jpeg' ? { quality: 92 } : {}) });
+  let buf;
+  // Runner-only transient: a chunk that starts mid-shot sometimes yields uniformly white frames for a while
+  // (seen on SwiftShader in CI, never locally). A uniform all-white/all-black screenshot outside a fade is wrong:
+  // wait, rebuild the shot, seek again, up to `retries` times.
+  for (let attempt = 0; ; attempt++) {
+    buf = await page.screenshot({ type, clip: { x: 0, y: 0, width: 1920, height: 1080 }, omitBackground: false, ...(type === 'jpeg' ? { quality: 92 } : {}) });
+    if (attempt >= retries) break;
+    const s = await sampleImage(page, Buffer.from(buf).toString('base64'), type);
+    const white = s.uniform && s.value[0] > 245 && s.value[1] > 245 && s.value[2] > 245;
+    const black = s.uniform && s.value[0] < 3 && s.value[1] < 3 && s.value[2] < 3;
+    const shot = await page.evaluate(() => { const c = window.__studio.current; return c ? { id: c.shot.id, local: c.lastLocal, frames: c.shot.frames, fadeIn: c.shot.fadeIn || 0, fadeOut: c.shot.fadeOut || 0 } : null; });
+    const inFade = shot && (shot.local < shot.fadeIn + 2 || shot.local > shot.frames - shot.fadeOut - 3);
+    if (!(white || black) || inFade || (black && shot && shot.id === 'shot18')) break;
+    console.log(`[blank-guard] frame ${frame} (${shot && shot.id} local ${shot && shot.local}) came back uniform ${white ? 'white' : 'black'}; rebuilding (attempt ${attempt + 1})`);
+    await new Promise(r => setTimeout(r, 700));
+    await page.evaluate(() => window.__studio.reset());
+    info = await page.evaluate(f => window.__studio.seek(f), frame);
+  }
+  fs.writeFileSync(file, buf);
+  const errs = await page.evaluate(() => window.__studio.errors.splice(0));
   return { ...info, errors: errs };
 }
 
