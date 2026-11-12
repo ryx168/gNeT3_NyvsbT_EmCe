@@ -67,7 +67,7 @@ export default {
         train.update(f, f / 24);
         const on = ease.seg(f, 10, 26, ease.outQuad);
         if (train.headlights) train.headlights.intensity = 7 * on;
-        beam.intensity = 60 * on; lampMat.color.setScalar(0.25 + 0.75 * on);
+        beam.intensity = 18 * on; lampMat.color.setScalar(0.25 + 0.75 * on);
         if (f >= 70 && !emitted.has(70)) { emitted.add(70); steam.emit(f, new THREE.Vector3(TRACK_X + 1.2, -0.5, z - 2)); }
         if (f >= 73 && !emitted.has(73)) { emitted.add(73); steam.emit(f, new THREE.Vector3(TRACK_X + 1.2, -0.5, z - 21)); }
         // doors: use whatever the set exposes (setDoors / openDoors / doors[] with open()), else just the light spill

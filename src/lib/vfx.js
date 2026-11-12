@@ -815,8 +815,8 @@ export function createGodRays(ctx, { origin = [0, 60, -400], color = 0xffe3a0, c
       uniform vec3 uColor; uniform float uIntensity;
       varying vec2 vAS; varying float vPulse;
       void main(){
-        float across = pow(1.0 - vAS.y*vAS.y, 1.6);
-        float along = pow(1.0 - vAS.x, 1.3) * smoothstep(0.0, 0.05, vAS.x);
+        float across = pow(max(0.0, 1.0 - vAS.y*vAS.y), 1.6);
+        float along = pow(max(0.0, 1.0 - vAS.x), 1.3) * smoothstep(0.0, 0.05, vAS.x);
         float a = across * along * vPulse * uIntensity * 0.55;
         if (a < 0.003) discard;
         gl_FragColor = vec4(uColor * a, a);

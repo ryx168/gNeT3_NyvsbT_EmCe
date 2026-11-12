@@ -10,8 +10,9 @@
 // Cue times are LOCAL frames (0-based inside the shot), inclusive. `from`/`to` are the first/last frame on
 // which the cue is visible at all; `fadeIn`/`fadeOut` are the ramp lengths in frames (default 8).
 
-const FONT_CJK = '"Microsoft JhengHei Light", "Microsoft JhengHei", "PingFang TC", "Noto Sans CJK TC", "Hiragino Sans", sans-serif';
-const FONT_LATIN = '"Segoe UI Light", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif';
+// single quotes only: these land inside double-quoted style="" attributes
+const FONT_CJK = "'Microsoft JhengHei Light', 'Microsoft JhengHei', 'PingFang TC', 'Noto Sans CJK TC', 'Hiragino Sans', sans-serif";
+const FONT_LATIN = "'Segoe UI Light', 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 /** cue table: shot id -> array of { from, to, fadeIn, fadeOut, kind, text, en } in local frames */
 export const CUES = {

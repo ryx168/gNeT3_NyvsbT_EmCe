@@ -35,7 +35,7 @@ export async function openStudio(browser, url) {
   const console_ = [];
   page.on('console', m => { const t = m.type(); if (t === 'error' || t === 'warning' || t === 'log') console_.push(`[${t}] ${m.text()}`); });
   page.on('pageerror', e => console_.push('[pageerror] ' + e.message));
-  await page.goto(url, { waitUntil: 'load', timeout: 120000 });
+  await page.goto(url + (process.env.STUDIO_QUERY || ''), { waitUntil: 'load', timeout: 120000 });
   await page.waitForFunction(() => window.__studio && window.__studio.ready, { timeout: 120000 });
   await page.evaluate(() => document.fonts.ready);
   const gl = await page.evaluate(() => window.__studio.gl);

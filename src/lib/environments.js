@@ -153,8 +153,8 @@ export function createCityNight(ctx, { seed = 1, extent = 300, density = 1, sign
   winTex.colorSpace = THREE.NoColorSpace;
   const uniforms = {
     uWin: { value: winTex }, uBody: { value: new THREE.Color(0x1c1e3c) }, uRoof: { value: new THREE.Color(0x141632) },
-    uHaze: { value: new THREE.Color(0x2a2150) }, uHazeNear: { value: extent * 0.25 }, uHazeFar: { value: extent * 1.6 },
-    uWarm: { value: new THREE.Color(0xffc37a) }, uCool: { value: new THREE.Color(0x8fe8ff) }, uWinW: { value: 1.6 }, uWinH: { value: 2.0 }, uGlow: { value: 1.35 },
+    uHaze: { value: new THREE.Color(0x2a2150) }, uHazeNear: { value: extent * 0.12 }, uHazeFar: { value: extent * 0.9 },
+    uWarm: { value: new THREE.Color(0xffc37a) }, uCool: { value: new THREE.Color(0x8fe8ff) }, uWinW: { value: 1.6 }, uWinH: { value: 2.0 }, uGlow: { value: 0.85 },
   };
   const towerMat = new THREE.ShaderMaterial({ uniforms, vertexShader: TOWER_VERT, fragmentShader: TOWER_FRAG });
   // layout: a street grid with blocks; several towers per block, a few landmarks
@@ -183,7 +183,7 @@ export function createCityNight(ctx, { seed = 1, extent = 300, density = 1, sign
   const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler();
   placements.forEach((p, i) => {
     e.set(0, p.rot, 0); q.setFromEuler(e); m4.compose(V3(p.x, p.h / 2, p.z), q, V3(p.w, p.h, p.d)); towers.setMatrixAt(i, m4);
-    iRand.set([r(), r(), r(), p.landmark ? 0.6 : 0.22 + r() * 0.3], i * 4);
+    iRand.set([r(), r(), r(), p.landmark ? 0.28 : 0.05 + r() * 0.12], i * 4);
     const tint = 0.75 + r() * 0.5; const hueShift = r();
     iTint.set([tint * (hueShift < 0.3 ? 1.15 : 1), tint, tint * (hueShift > 0.7 ? 1.2 : 1)], i * 3);
   });
@@ -389,3 +389,6 @@ export function createRooftop(ctx, { seed = 2 } = {}) {
   look.addOutline(group, { thickness: 0.015 });
   return { group, parapet, tank, hut, antenna, acUnits, puddles, floor, hutLight, update() {} };
 }
+
+/* ------------------------------------------------------------------ the remaining sets live in environments_sets.js */
+export * from './environments_sets.js';

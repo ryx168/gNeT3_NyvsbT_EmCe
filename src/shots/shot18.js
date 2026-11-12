@@ -1,17 +1,15 @@
-// PLACEHOLDER shot18: Credits
-// Beat: Credits card on black: 晨光列車 · First Light Express. Directed by one agent; built by seven departments in parallel; pure Three.js; 18 shots; 1,896 frames. Fade to black.
-// Replace this whole file. See bible/DIRECTOR.md for the contract.
+// shot18 — Credits (120 frames)
+// Black card; a few faint petals drift through. The titles department draws the credits on the overlay. post 'credits'.
 export default {
-  id: "shot18",
+  id: 'shot18',
   async build(ctx) {
     const { THREE, lib } = ctx;
-    const scene = new THREE.Scene();
-    const sky = lib.look.createSkyDome({ top: 0x1a1b3a, horizon: 0x3b2a5a, bottom: 0x0a0a16 }); scene.add(sky.mesh);
-    const camera = new THREE.PerspectiveCamera(35, ctx.width / ctx.height, 0.1, 2000);
-    lib.look.lightingKit(scene, "neutral");
-    const box = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), lib.look.toonMaterial({ color: 0xff3fa4 }));
-    lib.look.addOutline(box); scene.add(box);
-    const rig = ctx.camrig(camera).keys([{ f: 0, pos: [0, 1, 5], look: [0, 0, 0] }, { f: ctx.shot.frames - 1, pos: [2, 1.5, 4], look: [0, 0, 0] }]);
-    return { scene, camera, post: "neutral", update(local) { box.rotation.y = local * 0.05; rig.update(local); } };
+    const scene = new THREE.Scene(); scene.background = new THREE.Color(0x000000);
+    const camera = new THREE.PerspectiveCamera(35, ctx.width / ctx.height, 0.1, 100);
+    camera.position.set(0, 0, 10); camera.lookAt(0, 0, 0);
+    const petals = lib.vfx.createPetals(ctx, { count: 160, area: [20, 12, 6], center: [0, 0, -2], wind: [0.4, 0, 0], seed: 1801, size: 0.6, fall: 0.5 }); scene.add(petals.group);
+    petals.group.traverse(o => { if (o.material) { o.material.transparent = true; o.material.opacity = 0.22; } });
+    const dim = new THREE.AmbientLight(0x404050, 0.6); scene.add(dim);
+    return { scene, camera, post: 'credits', update(local) { petals.update(local); } };
   }
 };

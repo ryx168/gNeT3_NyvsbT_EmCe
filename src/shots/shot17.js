@@ -1,17 +1,48 @@
-// PLACEHOLDER shot17: New day
-// Beat: Wide sunrise over the sea; the plane is a speck against the sun; lens flare blooms; Yuki small on the beach. The words 新的一天 appear and dissolve. Fade to white.
-// Replace this whole file. See bible/DIRECTOR.md for the contract.
+// shot17 — New day (144 frames)
+// Wide sunrise over the sea on a long lens; the plane is a speck against the sun, flare at full, Yuki tiny on the
+// beach, gulls. The sky warms over the shot; the engine fades to white at the end. post 'sunrise'.
 export default {
-  id: "shot17",
+  id: 'shot17',
   async build(ctx) {
-    const { THREE, lib } = ctx;
+    const { THREE, lib, ease } = ctx;
+    const N = ctx.shot.frames;
     const scene = new THREE.Scene();
-    const sky = lib.look.createSkyDome({ top: 0x1a1b3a, horizon: 0x3b2a5a, bottom: 0x0a0a16 }); scene.add(sky.mesh);
-    const camera = new THREE.PerspectiveCamera(35, ctx.width / ctx.height, 0.1, 2000);
-    lib.look.lightingKit(scene, "neutral");
-    const box = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), lib.look.toonMaterial({ color: 0xff3fa4 }));
-    lib.look.addOutline(box); scene.add(box);
-    const rig = ctx.camrig(camera).keys([{ f: 0, pos: [0, 1, 5], look: [0, 0, 0] }, { f: ctx.shot.frames - 1, pos: [2, 1.5, 4], look: [0, 0, 0] }]);
-    return { scene, camera, post: "neutral", update(local) { box.rotation.y = local * 0.05; rig.update(local); } };
+    const camera = new THREE.PerspectiveCamera(18, ctx.width / ctx.height, 0.5, 6000);
+    const sp = lib.look.skyPresets.sunrise;
+    const SUN = new THREE.Vector3(-0.38, 0.12, -0.92).normalize();
+    const sky = lib.look.createSkyDome({ ...sp, radius: 3000, sunDir: SUN.toArray(), sunSize: 0.05, glow: 0.5, sunIntensity: 1.2 }); scene.add(sky.mesh);
+    scene.fog = new THREE.Fog(0xffd2a0, 400, 3000);
+    const kit = lib.look.lightingKit(scene, 'sunrise');
+
+    const beach = lib.environments.createBeach(ctx, { seed: 1701 }); scene.add(beach.group);
+    if (beach.sea) beach.sea.visible = false;
+    const sea = lib.vfx.createSea(ctx, { size: 5000, seed: 1702, sunDir: SUN.toArray(), shoreX: -30, foamWidth: 14, waveScale: 3, glint: 2.0 }); sea.mesh.position.set(-1500, -0.35, 0); scene.add(sea.group || sea.mesh);
+    const clouds = lib.vfx.createClouds(ctx, { count: 14, center: [-600, 150, -1600], spread: [2400, 40, 400], seed: 1703, sunDir: SUN.toArray(), size: 3 }); scene.add(clouds.group);
+    const gulls = lib.vfx.createGulls(ctx, { count: 6, center: [-200, 40, -300], radius: 50, seed: 1704, size: 2.2 }); scene.add(gulls.group);
+    const flare = lib.vfx.createLensFlare(ctx, { sun: SUN.clone().multiplyScalar(2600).toArray(), color: 0xffe2b0, intensity: 1 }); scene.add(flare.group);
+    const yuki = lib.characters.createYuki(ctx, { withBag: true }); yuki.group.position.set(-21, 0.25, -6); yuki.group.rotation.y = Math.atan2(-120 + 21, -40 + 6); scene.add(yuki.group);
+    const plane = lib.vfx.createPaperPlane(ctx, { scale: 1.6 }); scene.add(plane.group);
+    plane.setPath(lib.vfx.glidePath({ from: [-150, 40, -190], to: [-700, 180, -900], frames: N, start: 0, wobble: 0.4, bank: 1 }));
+
+    const rig = ctx.camrig(camera)
+      .keys([
+        { f: 0, pos: [40, 6, 60], look: [-420, 60, -800], fov: 18 },
+        { f: N - 1, pos: [30, 9, 50], look: [-460, 90, -900], fov: 16 },
+      ], ease.inOut)
+      .sway(0.01, 0.3);
+
+    return {
+      scene, camera, post: 'sunrise',
+      update(local) {
+        const t = local / (N - 1);
+        sky.set({ horizon: new THREE.Color(0xffc27a).lerp(new THREE.Color(0xffe6b8), t).getHex(), glow: ease.lerp(0.5, 0.8, t), sunIntensity: ease.lerp(1.2, 1.5, t) });
+        sky.update && sky.update(local);
+        yuki.pose('idle', local); yuki.setExpression('smile', 0.8); yuki.update(local);
+        plane.update(local);
+        sea.update(local); clouds.update(local); gulls.update(local);
+        flare.setIntensity(0.5 + 0.2 * t); flare.update(local, camera);
+        rig.update(local); kit.update && kit.update(local);
+      },
+    };
   }
 };

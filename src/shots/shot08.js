@@ -59,7 +59,7 @@ export default {
         rig.update(f);
         kit.update && kit.update(f);
         land.update(f, f / 24); mistA.update(f); mistB.update(f); speed.update(f);
-        speed.setIntensity && speed.setIntensity(0.4 * ease.seg(f, 22, 60));
+        speed.setIntensity && speed.setIntensity(0.12 * ease.seg(f, 22, 60));
         // the horizon warms a touch as the shot runs
         hz.lerpColors(H0, H1, ease.seg(f, 0, N - 1));
         sky.set({ horizon: hz });

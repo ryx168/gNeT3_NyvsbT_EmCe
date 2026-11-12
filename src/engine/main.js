@@ -53,7 +53,9 @@ async function ensureShot(shot) {
   inst.camera.aspect = width / height; inst.camera.updateProjectionMatrix();
   let post = null;
   try {
-    post = look.createPostStack({ renderer, scene: inst.scene, camera: inst.camera, width, height, preset: inst.post || 'neutral' });
+    const q = new URLSearchParams(location.search);
+    post = q.get('nopost') ? null : look.createPostStack({ renderer, scene: inst.scene, camera: inst.camera, width, height, preset: inst.post || 'neutral' });
+    if (post && q.get('nobloom')) post.setParam('bloomStrength', 0);
   } catch (e) { errors.push('post stack ' + shot.id + ': ' + (e.stack || e.message)); post = null; }
   current = { shot, inst, post, lastLocal: -1 };
   return current;
@@ -90,8 +92,11 @@ async function seek(frame) {
 /** drop the current shot so the next seek rebuilds it from local 0 (used after a warm-up frame) */
 function reset() { if (current) { try { current.inst.dispose && current.inst.dispose(); } catch (e) {} overlay.innerHTML = ''; current = null; } }
 
+/** debug: re-render the current frame without stepping (after hiding objects etc.) */
+function rerender() { if (!current) return; if (current.post) current.post.render(current.lastLocal, current.shot.start + current.lastLocal); else renderer.render(current.inst.scene, current.inst.camera); }
+
 window.__studio = {
-  manifest, fps, width, height, frameCount, seek, shotFor, reset,
+  manifest, fps, width, height, frameCount, seek, shotFor, reset, rerender, get current() { return current; },
   errors, log,
   gl: (() => { const gl = renderer.getContext(); const d = gl.getExtension('WEBGL_debug_renderer_info'); return d ? gl.getParameter(d.UNMASKED_RENDERER_WEBGL) : 'unknown'; })(),
   ready: true
