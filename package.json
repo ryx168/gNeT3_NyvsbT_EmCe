@@ -1,0 +1,17 @@
+{
+  "name": "anime-studio",
+  "private": true,
+  "type": "module",
+  "description": "Terminal animation studio: 79 s anime short rendered purely from Three.js code, 18 shots, 1,896 frames.",
+  "scripts": {
+    "serve": "node render/serve.mjs",
+    "preview": "node render/preview.mjs",
+    "render": "node render/render.mjs",
+    "assemble": "node render/assemble.mjs",
+    "check": "node render/check.mjs"
+  },
+  "dependencies": {
+    "puppeteer": "^25.3.0",
+    "three": "^0.182.0"
+  }
+}

@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>First Light Express — studio</title>
+<style>
+  html, body { margin: 0; background: #000; overflow: hidden; width: 1920px; height: 1080px; }
+  #stage { position: relative; width: 1920px; height: 1080px; }
+  canvas { display: block; position: absolute; left: 0; top: 0; }
+  #overlay { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; pointer-events: none;
+             font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans CJK TC", "Hiragino Sans", sans-serif; }
+  #fade { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; pointer-events: none; opacity: 0; background: #000; }
+</style>
+<script type="importmap">
+{ "imports": { "three": "/node_modules/three/build/three.module.js",
+               "three/addons/": "/node_modules/three/examples/jsm/" } }
+</script>
+</head>
+<body>
+<div id="stage"><div id="overlay"></div><div id="fade"></div></div>
+<script type="module" src="/src/engine/main.js"></script>
+</body>
+</html>

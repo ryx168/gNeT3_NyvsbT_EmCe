@@ -1,0 +1,27 @@
+{
+  "fps": 24,
+  "width": 1920,
+  "height": 1080,
+  "frameCount": 1896,
+  "title": "晨光列車 / First Light Express",
+  "shots": [
+    {"id":"shot01","start":0,"end":95,"fadeIn":12,"fadeOut":0,"name":"Cold open: rain on the window","beat":"Night. Raindrops run down a dark apartment window; neon from the street below smears into bokeh. The title 晨光列車 breathes in over the glass. A hand (Yuki) touches the pane."},
+    {"id":"shot02","start":96,"end":191,"fadeIn":0,"fadeOut":0,"name":"Rooftop over the city","beat":"Wide. Yuki stands on an apartment rooftop under a clear umbrella, looking at an endless neon city in the rain. Rain streaks, distant lights pulse, a plane blinks across the sky."},
+    {"id":"shot03","start":192,"end":263,"fadeIn":0,"fadeOut":0,"name":"Her decision","beat":"Close-up, low angle. Rain beads on the umbrella rim. Yuki looks up, exhales, and closes the umbrella in one motion. Rain hits her hair; she doesn't flinch."},
+    {"id":"shot04","start":264,"end":359,"fadeIn":0,"fadeOut":0,"name":"The platform","beat":"Station platform at night, wet concrete mirroring the lights. Headlights grow from the dark; the First Light Express slides in with mist and a soft hiss. Doors open, warm light spills out."},
+    {"id":"shot05","start":360,"end":455,"fadeIn":0,"fadeOut":0,"name":"Window seat","beat":"Train interior. Yuki sits by the window, bag on her lap. The city lights streak past as the train accelerates; her reflection floats over the glass."},
+    {"id":"shot06","start":456,"end":551,"fadeIn":0,"fadeOut":0,"name":"Bridge over the city","beat":"Exterior wide, slightly high. The lit train crosses a long steel bridge over the river; the city's towers glitter behind. Camera slowly cranes up and back."},
+    {"id":"shot07","start":552,"end":647,"fadeIn":0,"fadeOut":10,"name":"Falling asleep","beat":"Interior close-up. Yuki's eyes grow heavy; the neon outside fades to dark countryside; only the carriage lamps glow. She rests her head against the glass. Fade out."},
+    {"id":"shot08","start":648,"end":767,"fadeIn":10,"fadeOut":0,"name":"Out of the tunnel","beat":"Blue hour. The train bursts from a tunnel into the countryside; mist lies in sheets over rice fields; the sky is deep indigo bleeding to rose at the horizon. Camera tracks alongside."},
+    {"id":"shot09","start":768,"end":863,"fadeIn":0,"fadeOut":0,"name":"Mountain dawn","beat":"Epic wide. Layered mountain silhouettes, a sky gradient from indigo to gold; the sun's first rays break over a ridge in god rays. The train is a tiny lit thread along the valley."},
+    {"id":"shot10","start":864,"end":959,"fadeIn":0,"fadeOut":0,"name":"Waking in sunlight","beat":"Interior. A bar of golden light sweeps across Yuki's face as the train turns; she wakes, blinks, and sits up. Window frames and passing poles strobe gently across her."},
+    {"id":"shot11","start":960,"end":1079,"fadeIn":0,"fadeOut":0,"name":"Cherry blossom lane","beat":"Exterior along the track: rows of sakura in full bloom. The train passes through and petals explode into the air, swirling in the wake. Camera drifts with the petals, slow and dreamy."},
+    {"id":"shot12","start":1080,"end":1175,"fadeIn":0,"fadeOut":0,"name":"The letter","beat":"Insert, over the shoulder. Yuki unfolds a letter in her hands, reads it, then folds it carefully into a paper plane. Sunlight and petal shadows move across the paper."},
+    {"id":"shot13","start":1176,"end":1271,"fadeIn":0,"fadeOut":0,"name":"Coast reveal","beat":"Exterior. The train rounds a cliff and the sea opens up, impossibly wide and bright. Camera cranes up from track level to reveal the whole coastline and the morning sun on the water."},
+    {"id":"shot14","start":1272,"end":1367,"fadeIn":0,"fadeOut":0,"name":"Seaside station","beat":"A tiny seaside station. Yuki steps down onto the platform, bag over her shoulder; wind catches her hair; gulls wheel overhead. The train pulls away behind her."},
+    {"id":"shot15","start":1368,"end":1487,"fadeIn":0,"fadeOut":0,"name":"To the water's edge","beat":"Beach. Yuki walks down the sand to where the waves run in; low sun, long shadow. She stops at the edge of the foam and takes out the paper plane."},
+    {"id":"shot16","start":1488,"end":1631,"fadeIn":0,"fadeOut":0,"name":"The throw","beat":"She throws the paper plane. Camera follows it out over the water, low and fast, catching sun glints on the waves, then rising as the plane climbs into the light."},
+    {"id":"shot17","start":1632,"end":1775,"fadeIn":0,"fadeOut":18,"fadeColor":"#ffffff","name":"New day","beat":"Wide sunrise over the sea; the plane is a speck against the sun; lens flare blooms; Yuki small on the beach. The words 新的一天 appear and dissolve. Fade to white."},
+    {"id":"shot18","start":1776,"end":1895,"fadeIn":18,"fadeOut":24,"fadeInColor":"#ffffff","name":"Credits","beat":"Credits card on black: 晨光列車 · First Light Express. Directed by one agent; built by seven departments in parallel; pure Three.js; 18 shots; 1,896 frames. Fade to black."}
+  ]
+}

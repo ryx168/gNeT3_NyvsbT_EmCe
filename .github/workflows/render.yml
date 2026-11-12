@@ -1,0 +1,98 @@
+name: render
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      chunks:
+        description: how many parallel jobs the 1896 frames are split across
+        default: "12"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: render-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  CI: "1"
+
+jobs:
+  # every push: integrity check + one half-size still per shot as a smoke test (SwiftShader, no GPU)
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - name: CJK fonts for the titles
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq fonts-noto-cjk >/dev/null && fc-list | grep -ci "noto sans cjk"
+      - run: npm ci
+      - run: node render/check.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: stills, path: preview/check/ }
+
+  plan:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.m.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: m
+        run: |
+          python3 - "${{ inputs.chunks }}" <<'PY' >> "$GITHUB_OUTPUT"
+          import json, sys
+          n = int(sys.argv[1]); total = json.load(open('bible/shots.json'))['frameCount']; per = -(-total // n)
+          items = [{"start": s, "end": min(total - 1, s + per - 1)} for s in range(0, total, per)]
+          print("matrix=" + json.dumps({"include": items}))
+          PY
+
+  frames:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - name: CJK fonts for the titles
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq fonts-noto-cjk >/dev/null
+      - run: npm ci
+      - run: node render/render.mjs --workers 1 --start ${{ matrix.start }} --end ${{ matrix.end }} --out frames
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frames-${{ matrix.start }}
+          path: frames/
+          compression-level: 0
+
+  stitch:
+    needs: frames
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - uses: actions/download-artifact@v4
+        with: { pattern: frames-*, path: frames, merge-multiple: true }
+      - name: score + stitch
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg >/dev/null
+          ls frames | wc -l
+          node audio/synth.mjs
+          node render/assemble.mjs --out out/first_light_express.mp4
+          ffmpeg -y -i out/first_light_express.mp4 -vf "select='not(mod(n\,105))',scale=480:-1,tile=6x3" -frames:v 1 out/contact_sheet.png
+          ls -la out
+      - name: attach to a release
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: |
+          tag="run-${{ github.run_number }}"
+          gh release create "$tag" out/first_light_express.mp4 out/contact_sheet.png --title "First Light Express render $tag" --notes "晨光列車 / First Light Express — 79 s, 24 fps, 1920x1080, 18 shots, 1,896 frames, pure Three.js, rendered on GitHub Actions in ${{ inputs.chunks }} chunks with a procedural score."
