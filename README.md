@@ -1,5 +1,10 @@
 # anime-studio — 晨光列車 / First Light Express
 
+**Watch it:** [first_light_express.mp4](https://github.com/ryx168/gNeT3_NyvsbT_EmCe/releases/tag/run-12) (release `run-12`: 213 MB master at CRF 17, 49 MB web encode, contact sheet).
+Rendered end to end on GitHub Actions: 12 ubuntu runners on SwiftShader, about 15 minutes per full render.
+
+![contact sheet](https://github.com/ryx168/gNeT3_NyvsbT_EmCe/releases/download/run-12/contact_sheet.png)
+
 A 79-second anime short produced entirely from code in a terminal: pure Three.js, 18 shots, 1,896 frames at 24 fps, 1920×1080.
 Organised like a studio: one director (the orchestrating Claude session) plus seven department agents working in parallel,
 each owning one library or a block of shots and building against a shared contract (`bible/DIRECTOR.md`).
